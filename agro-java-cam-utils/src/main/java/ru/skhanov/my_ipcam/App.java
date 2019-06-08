@@ -25,6 +25,13 @@ import com.github.sarxos.webcam.ds.ipcam.IpCamDeviceRegistry;
 import com.github.sarxos.webcam.ds.ipcam.IpCamDriver;
 import com.github.sarxos.webcam.ds.ipcam.IpCamMode;
 
+import be.teletask.onvif.OnvifManager;
+import be.teletask.onvif.listeners.OnvifDeviceInformationListener;
+import be.teletask.onvif.listeners.OnvifServicesListener;
+import be.teletask.onvif.models.OnvifDevice;
+import be.teletask.onvif.models.OnvifDeviceInformation;
+import be.teletask.onvif.models.OnvifServices;
+
 /**
  * Hello world!
  *
@@ -90,5 +97,6 @@ public class App {
 //		f.pack();
 //		f.setVisible(true);
 //		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
+	}	
+
 }

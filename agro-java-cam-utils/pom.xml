@@ -12,8 +12,18 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>jcenter</id>
+			<name>jcenter</name>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.github.sarxos/webcam-capture -->
@@ -38,12 +48,20 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/be.teletask.onvif/onvif -->
+		<dependency>
+			<groupId>be.teletask.onvif</groupId>
+			<artifactId>onvif</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.drewnoakes</groupId> -->
-<!-- 			<artifactId>metadata-extractor</artifactId> -->
-<!-- 			<version>2.11.0</version> -->
-<!-- 		</dependency> -->
+
+
+		<!-- <dependency> -->
+		<!-- <groupId>com.drewnoakes</groupId> -->
+		<!-- <artifactId>metadata-extractor</artifactId> -->
+		<!-- <version>2.11.0</version> -->
+		<!-- </dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-imaging -->
 		<dependency>
