@@ -3,12 +3,11 @@ package ru.skhanov.my_ipcam;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 
@@ -79,21 +78,25 @@ public class App {
 
 	private static void getImageFromCam(Webcam webcamPush) {
 		webcamPush.open(true);
+		byte[] imageInByte = null;
 		BufferedImage image = webcamPush.getImage();
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
-			ImageIO.write(image, "jpg", new File("test.jpg"));
+			ImageIO.write(image, "jpg", byteArrayOutputStream);	
+			byteArrayOutputStream.flush();
+			imageInByte = byteArrayOutputStream.toByteArray();
+			byteArrayOutputStream.close();
 		} catch (IOException e) {	
 			e.printStackTrace();
 		}		
 		try {
-			File inputFile = new File("test.jpg");			
-			OutputStream os = new BufferedOutputStream(new FileOutputStream(new File("test1.jpg")));
+			OutputStream os = new BufferedOutputStream(new FileOutputStream(new File("outputImage.jpg")));
 //			ImageMetadata imageMetadata = Imaging.getMetadata(inputFile);
 //			JpegImageMetadata jpegImageMetadata = (JpegImageMetadata) imageMetadata;
 			TiffOutputSet tiffOutputSet = new TiffOutputSet();
 			tiffOutputSet.setGPSInDegrees(41.3477778, 56.8525000);
-//			new ExifRewriter().updateExifMetadataLossless(inputFile, os, tiffOutputSet);
-			new ExifRewriter().updateExifMetadataLossless(inputFile, os, tiffOutputSet);
+			
+			new ExifRewriter().updateExifMetadataLossless(imageInByte, os, tiffOutputSet);
 		} catch (ImageReadException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
