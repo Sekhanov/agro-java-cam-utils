@@ -1,8 +1,19 @@
 package ru.skhanov.ipcam.fxcontrollers;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.ds.ipcam.IpCamAuth;
+import com.github.sarxos.webcam.ds.ipcam.IpCamDevice;
+import com.github.sarxos.webcam.ds.ipcam.IpCamDeviceRegistry;
+import com.github.sarxos.webcam.ds.ipcam.IpCamDriver;
+import com.github.sarxos.webcam.ds.ipcam.IpCamMode;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -18,18 +29,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import ru.skhanov.ipcam.utils.ImageUtils;
-
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.ds.ipcam.IpCamAuth;
-import com.github.sarxos.webcam.ds.ipcam.IpCamDevice;
-import com.github.sarxos.webcam.ds.ipcam.IpCamDeviceRegistry;
-import com.github.sarxos.webcam.ds.ipcam.IpCamDriver;
-import com.github.sarxos.webcam.ds.ipcam.IpCamMode;
 
 
 
@@ -40,28 +45,31 @@ public class WebCamPreviewController implements Initializable {
 	private static final String PASSWORD = "";
 	private static final String IMAGE_URL = "http://192.168.100.188/dms?nowprofileid=1";
 
-	private  Webcam imageCam = null;
+//	private  Webcam imageCam = null;
+	
+	@FXML
+	private TextField shotNameTextField;
 
 	@FXML
-	Button btnStartCamera;
+	private Button btnStartCamera;
 
 	@FXML
-	Button btnStopCamera;
+	private Button btnStopCamera;
 
 	@FXML
-	Button btnDisposeCamera;
+	private Button btnDisposeCamera;
 
 	@FXML
-	ComboBox<WebCamInfo> cbCameraOptions;
+	private ComboBox<WebCamInfo> cbCameraOptions;
 
 	@FXML
-	BorderPane bpWebCamPaneHolder;
+	private BorderPane bpWebCamPaneHolder;
 
 	@FXML
-	FlowPane fpBottomPane;
+	private FlowPane fpBottomPane;
 
 	@FXML
-	ImageView imgWebCamCapturedImage;
+	private ImageView imgWebCamCapturedImage;
 
 	private class WebCamInfo {
 
@@ -94,7 +102,6 @@ public class WebCamPreviewController implements Initializable {
 	private Webcam selWebCam = null;
 	private boolean stopCamera = false;
 	private ObjectProperty<Image> imageProperty = new SimpleObjectProperty<Image>();
-
 	private String cameraListPromptText = "Выберите камеру";
 
 	@Override
@@ -102,7 +109,7 @@ public class WebCamPreviewController implements Initializable {
 		Webcam.setDriver(new IpCamDriver());
 		try {
 			IpCamDeviceRegistry.register(new IpCamDevice(IMAGE_CAM_NAME, IMAGE_URL, IpCamMode.PULL, new IpCamAuth(USER, PASSWORD)));
-			imageCam = Webcam.getWebcamByName(IMAGE_CAM_NAME);
+//			imageCam = Webcam.getWebcamByName(IMAGE_CAM_NAME);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -130,7 +137,6 @@ public class WebCamPreviewController implements Initializable {
 			}
 		});
 		Platform.runLater(new Runnable() {
-
 			@Override
 			public void run() {
 				setImageViewSize();
@@ -140,7 +146,6 @@ public class WebCamPreviewController implements Initializable {
 	}
 
 	protected void setImageViewSize() {
-
 		double height = bpWebCamPaneHolder.getHeight();
 		double width = bpWebCamPaneHolder.getWidth();
 		imgWebCamCapturedImage.setFitHeight(height);
@@ -152,12 +157,10 @@ public class WebCamPreviewController implements Initializable {
 	}
 
 	protected void initializeWebCam(final int webCamIndex) {
-
 		Task<Void> webCamIntilizer = new Task<Void>() {
 
 			@Override
 			protected Void call() throws Exception {
-
 				if (selWebCam == null) {
 					selWebCam = Webcam.getWebcams().get(webCamIndex);
 					selWebCam.open();
@@ -169,7 +172,6 @@ public class WebCamPreviewController implements Initializable {
 				startWebCamStream();
 				return null;
 			}
-
 		};
 
 		new Thread(webCamIntilizer).start();
@@ -178,19 +180,15 @@ public class WebCamPreviewController implements Initializable {
 	}
 
 	protected void startWebCamStream() {
-
 		stopCamera = false;
 		Task<Void> task = new Task<Void>() {
 
 			@Override
 			protected Void call() throws Exception {
-
 				while (!stopCamera) {
 					try {
 						if ((grabbedImage = selWebCam.getImage()) != null) {
-
 							Platform.runLater(new Runnable() {
-
 								@Override
 								public void run() {
 									final Image mainiamge = SwingFXUtils
@@ -198,7 +196,6 @@ public class WebCamPreviewController implements Initializable {
 									imageProperty.set(mainiamge);
 								}
 							});
-
 							grabbedImage.flush();
 
 						}
@@ -206,16 +203,13 @@ public class WebCamPreviewController implements Initializable {
 						e.printStackTrace();
 					}
 				}
-
 				return null;
 			}
-
 		};
 		Thread th = new Thread(task);
 		th.setDaemon(true);
 		th.start();
 		imgWebCamCapturedImage.imageProperty().bind(imageProperty);
-
 	}
 
 	private void closeCamera() {
@@ -229,8 +223,16 @@ public class WebCamPreviewController implements Initializable {
 		stopCamera = true;
 		btnStartCamera.setDisable(false);
 		btnStopCamera.setDisable(true);
-		ImageUtils.getImageFromCamWithMetadata(webcam, "qwer");
+		ImageUtils.getImageFromCamWithMetadata(webcam, shotNameTextField.getText());		 
+		try(FileInputStream fileInputStream = new FileInputStream(new File("123.jpg"));) {
+			imageProperty.set(new Image(fileInputStream));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
 		webcam.open();
+		shotNameTextField.setText("");
 		
 	}
 
