@@ -43,7 +43,7 @@
 		</VBox>
 	</top>
    <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="vBoxCamPlaceholder" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
 				<ImageView fx:id="imgWebCamCapturedImage" fitHeight="430.0" fitWidth="833.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>

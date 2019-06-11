@@ -8,12 +8,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
-/**
- * This example demonstrates how to use Webcam Capture API via FXML in a JavaFX
- * application.
- * 
- * @author Rakesh Bhatt (rakeshbhatt10)
- */
 public class WebCamAppLauncher extends Application {
 
 	@Override
@@ -21,7 +15,7 @@ public class WebCamAppLauncher extends Application {
 
 		Parent root = null;
 		try {
-			root = FXMLLoader.load(getClass().getResource("/WebCamPreview.fxml"));
+			root = FXMLLoader.load(getClass().getResource("/WebCamView.fxml"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -31,6 +25,7 @@ public class WebCamAppLauncher extends Application {
 		primaryStage.setTitle("WebCam Capture Sarxos API using JavaFx with FXML ");
 		primaryStage.setScene(scene);
 		primaryStage.centerOnScreen();
+		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
 

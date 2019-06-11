@@ -32,8 +32,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import ru.skhanov.ipcam.utils.ImageUtils;
 
 
@@ -63,7 +63,7 @@ public class WebCamPreviewController implements Initializable {
 	private ComboBox<WebCamInfo> cbCameraOptions;
 
 	@FXML
-	private BorderPane bpWebCamPaneHolder;
+	private VBox vBoxCamPlaceholder;
 
 	@FXML
 	private FlowPane fpBottomPane;
@@ -136,18 +136,18 @@ public class WebCamPreviewController implements Initializable {
 				}
 			}
 		});
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				setImageViewSize();
-			}
-		});
+//		Platform.runLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				setImageViewSize();
+//			}
+//		});
 
 	}
 
 	protected void setImageViewSize() {
-		double height = bpWebCamPaneHolder.getHeight();
-		double width = bpWebCamPaneHolder.getWidth();
+		double height = vBoxCamPlaceholder.getHeight();
+		double width = vBoxCamPlaceholder.getWidth();
 		imgWebCamCapturedImage.setFitHeight(height);
 		imgWebCamCapturedImage.setFitWidth(width);
 		imgWebCamCapturedImage.prefHeight(height);
