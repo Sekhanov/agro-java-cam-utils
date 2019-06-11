@@ -1,4 +1,4 @@
-package ru.skhanov.my_ipcam;
+package ru.skhanov.ipcam;
 
 import be.teletask.onvif.OnvifManager;
 import be.teletask.onvif.models.OnvifDevice;

@@ -1,4 +1,4 @@
-package ru.skhanov.my_ipcam;
+package ru.skhanov.ipcam;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
