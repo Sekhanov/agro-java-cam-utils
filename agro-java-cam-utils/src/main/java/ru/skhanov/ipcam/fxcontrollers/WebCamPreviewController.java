@@ -22,6 +22,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import ru.skhanov.ipcam.utils.ImageUtils;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.ds.ipcam.IpCamAuth;
@@ -34,7 +35,7 @@ import com.github.sarxos.webcam.ds.ipcam.IpCamMode;
 
 public class WebCamPreviewController implements Initializable {
 	
-	private static final String IMAGE_CAM = "турникет КПП";
+	private static final String IMAGE_CAM_NAME = "KPP_holl";
 	private static final String USER = "admin";
 	private static final String PASSWORD = "";
 	private static final String IMAGE_URL = "http://192.168.100.188/dms?nowprofileid=1";
@@ -94,14 +95,14 @@ public class WebCamPreviewController implements Initializable {
 	private boolean stopCamera = false;
 	private ObjectProperty<Image> imageProperty = new SimpleObjectProperty<Image>();
 
-	private String cameraListPromptText = "Choose Camera";
+	private String cameraListPromptText = "Выберите камеру";
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		Webcam.setDriver(new IpCamDriver());
 		try {
-			IpCamDeviceRegistry.register(new IpCamDevice(IMAGE_CAM, IMAGE_URL, IpCamMode.PULL, new IpCamAuth(USER, PASSWORD)));
-			imageCam = Webcam.getWebcamByName(IMAGE_CAM);
+			IpCamDeviceRegistry.register(new IpCamDevice(IMAGE_CAM_NAME, IMAGE_URL, IpCamMode.PULL, new IpCamAuth(USER, PASSWORD)));
+			imageCam = Webcam.getWebcamByName(IMAGE_CAM_NAME);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -224,9 +225,13 @@ public class WebCamPreviewController implements Initializable {
 	}
 
 	public void stopCamera(ActionEvent event) {
+		Webcam webcam = Webcam.getWebcamByName(IMAGE_CAM_NAME);
 		stopCamera = true;
 		btnStartCamera.setDisable(false);
 		btnStopCamera.setDisable(true);
+		ImageUtils.getImageFromCamWithMetadata(webcam, "qwer");
+		webcam.open();
+		
 	}
 
 	public void startCamera(ActionEvent event) {
