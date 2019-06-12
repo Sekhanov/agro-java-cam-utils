@@ -41,14 +41,18 @@ import ru.skhanov.ipcam.utils.ImageUtils;
 public class WebCamPreviewController implements Initializable {
 	
 	private static final String IMAGE_CAM_NAME = "KPP_holl";
+	private static final String IMAGE_CAM_NAME2 = "controllers";
 	private static final String USER = "admin";
+	private static final String USER2 = "admin";
 	private static final String PASSWORD = "";
+	private static final String PASSWORD2 = "veterIP";
 	private static final String IMAGE_URL = "http://192.168.100.188/dms?nowprofileid=1";
+	private static final String IMAGE_URL2 = "http://192.168.100.195/dms?nowprofileid=1";
 
-//	private  Webcam imageCam = null;
-	
 	@FXML
 	private TextField shotNameTextField;
+	
+	private String shotNameString = "";
 
 	@FXML
 	private Button btnStartCamera;
@@ -109,7 +113,7 @@ public class WebCamPreviewController implements Initializable {
 		Webcam.setDriver(new IpCamDriver());
 		try {
 			IpCamDeviceRegistry.register(new IpCamDevice(IMAGE_CAM_NAME, IMAGE_URL, IpCamMode.PULL, new IpCamAuth(USER, PASSWORD)));
-//			imageCam = Webcam.getWebcamByName(IMAGE_CAM_NAME);
+			IpCamDeviceRegistry.register(new IpCamDevice(IMAGE_CAM_NAME2, IMAGE_URL2, IpCamMode.PULL, new IpCamAuth(USER2, PASSWORD2)));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -136,25 +140,13 @@ public class WebCamPreviewController implements Initializable {
 				}
 			}
 		});
-//		Platform.runLater(new Runnable() {
-//			@Override
-//			public void run() {
-//				setImageViewSize();
-//			}
-//		});
-
+		shotNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+//		    System.out.println("textfield changed from " + oldValue + " to " + newValue);
+			shotNameString = newValue;
+		});
 	}
 
-	protected void setImageViewSize() {
-		double height = vBoxCamPlaceholder.getHeight();
-		double width = vBoxCamPlaceholder.getWidth();
-		imgWebCamCapturedImage.setFitHeight(height);
-		imgWebCamCapturedImage.setFitWidth(width);
-		imgWebCamCapturedImage.prefHeight(height);
-		imgWebCamCapturedImage.prefWidth(width);
-		imgWebCamCapturedImage.setPreserveRatio(true);
 
-	}
 
 	protected void initializeWebCam(final int webCamIndex) {
 		Task<Void> webCamIntilizer = new Task<Void>() {
@@ -177,6 +169,8 @@ public class WebCamPreviewController implements Initializable {
 		new Thread(webCamIntilizer).start();
 		fpBottomPane.setDisable(false);
 		btnStartCamera.setDisable(true);
+		btnStopCamera.setDisable(false);
+		cbCameraOptions.setDisable(true);
 	}
 
 	protected void startWebCamStream() {
@@ -203,6 +197,15 @@ public class WebCamPreviewController implements Initializable {
 						e.printStackTrace();
 					}
 				}
+				while(stopCamera && selWebCam != null) {
+					try(FileInputStream fileInputStream = new FileInputStream(new File("123.jpg"));) {
+						imageProperty.set(new Image(fileInputStream));
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 				return null;
 			}
 		};
@@ -215,23 +218,16 @@ public class WebCamPreviewController implements Initializable {
 	private void closeCamera() {
 		if (selWebCam != null) {
 			selWebCam.close();
+			selWebCam = null;
 		}
 	}
 
 	public void stopCamera(ActionEvent event) {
-		Webcam webcam = Webcam.getWebcamByName(IMAGE_CAM_NAME);
 		stopCamera = true;
 		btnStartCamera.setDisable(false);
 		btnStopCamera.setDisable(true);
-		ImageUtils.getImageFromCamWithMetadata(webcam, shotNameTextField.getText());		 
-		try(FileInputStream fileInputStream = new FileInputStream(new File("123.jpg"));) {
-			imageProperty.set(new Image(fileInputStream));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-		webcam.open();
+		ImageUtils.getImageFromCamWithMetadata(selWebCam, shotNameString);
+		selWebCam.open();
 		shotNameTextField.setText("");
 		
 	}
@@ -246,7 +242,10 @@ public class WebCamPreviewController implements Initializable {
 	public void disposeCamera(ActionEvent event) {
 		stopCamera = true;
 		closeCamera();
-		btnStopCamera.setDisable(true);
-		btnStartCamera.setDisable(true);
+//		btnStopCamera.setDisable(true);
+//		btnStartCamera.setDisable(true);
+		cbCameraOptions.setDisable(false);
+		fpBottomPane.setDisable(true);
+		
 	}
 }

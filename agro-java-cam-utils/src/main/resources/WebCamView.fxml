@@ -15,7 +15,7 @@
 	<bottom>
 		<FlowPane fx:id="fpBottomPane" alignment="CENTER" columnHalignment="CENTER" hgap="50.0" prefHeight="80.0" prefWidth="200.0" style="-fx-background-color:#ccc;">
          <children>
-				<Button fx:id="btnStartCamera" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#startCamera" prefHeight="50.0" prefWidth="190.0" text="Включить камеру">
+				<Button fx:id="btnStartCamera" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#startCamera" prefHeight="50.0" prefWidth="190.0" text="Включить съемку">
                <font>
                   <Font size="16.0" />
                </font></Button>
@@ -23,6 +23,10 @@
                <font>
                   <Font size="16.0" />
                </font></Button>
+               	<Button fx:id="btnDisposeCamera" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#disposeCamera" prefHeight="50.0" prefWidth="190.0" text="Отключить камеру">
+               <font>
+                  <Font size="16.0" />
+               </font></Button>               
          </children>
 		</FlowPane>
 	</bottom>
